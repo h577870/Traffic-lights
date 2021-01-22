@@ -3,6 +3,9 @@
 
 #include "framework.h"
 #include "Oblig1.h"
+
+#include <list>
+
 #include "traffic_light.h"
 
 constexpr auto MAX_LOADSTRING = 100;
@@ -11,12 +14,15 @@ constexpr auto MAX_LOADSTRING = 100;
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+std::list<traffic_light> traffic_lights;
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -118,7 +124,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 
 	case WM_CREATE:
-
 	    	
     case WM_COMMAND:
         {
@@ -139,22 +144,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
+    		//TODO: Need to create lights elsewhere...
             PAINTSTRUCT ps;
             const HDC hdc = BeginPaint(hWnd, &ps);
+			traffic_lights = {
+				traffic_light(0, 150, 250, hdc),
+    			traffic_light(1, 550, 250, hdc),
+    			traffic_light(2, 150, 650, hdc),
+    			traffic_light(3, 550, 650, hdc)
+			};
 
-            auto* t1 = new traffic_light(0, 150, 250, hdc);
-    		auto* t2 = new traffic_light(0, 550, 250, hdc);
-    		auto* t3 = new traffic_light(0, 150, 650, hdc);
-    		auto* t4 = new traffic_light(0, 550, 650, hdc);
-			t1->draw_initial();
-    		t2->draw_initial();
-    		t3->draw_initial();
-    		t4->draw_initial();
-            
+    		/*
+				Choose auto x when you want to work with copies.
+				Choose auto &x when you want to work with original items and may modify them.
+				Choose auto const &x when you want to work with original items and will not modify them.
+    		 */
+    		
+            for (auto const &light : traffic_lights)
+            {
+	            light.draw();
+            }
             EndPaint(hWnd, &ps);
         }
         break;
     case WM_DESTROY:
+		traffic_lights.clear();
         PostQuitMessage(0);
         break;
     default:

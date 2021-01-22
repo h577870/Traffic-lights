@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include <Windows.h>
+#include "framework.h"
 
 class traffic_light
 {
@@ -9,5 +9,6 @@ class traffic_light
 	HDC hdc_;
 public:
 	traffic_light(int state, int xpos, int ypos, HDC hdc);
-	void draw_initial() const;
+	void set_state();
+	void draw() const;
 };
