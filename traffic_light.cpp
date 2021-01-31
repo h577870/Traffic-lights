@@ -19,7 +19,7 @@ void traffic_light::draw(HDC hdc) const
     SelectObject(hdc, stockbrush);
 	switch (state_)
 	{
-	case 0:
+	case 0: //Rød
 		{
 			SetDCBrushColor(hdc, RGB(0,0,0));
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);
@@ -30,7 +30,7 @@ void traffic_light::draw(HDC hdc) const
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 5, xpos_ - 45, ypos_ - 45);
 		}
 		break;
-	case 1:
+	case 1: //Rød og gul
 		{
 			SetDCBrushColor(hdc, RGB(0,0,0));
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);
@@ -42,7 +42,7 @@ void traffic_light::draw(HDC hdc) const
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 5, xpos_ - 45, ypos_ - 45);
 		}
 		break;
-	case 2:
+	case 2: //Grønn
 		{
 			SetDCBrushColor(hdc, RGB(0,0,0));
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);
@@ -53,7 +53,7 @@ void traffic_light::draw(HDC hdc) const
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 5, xpos_ - 45, ypos_ - 45);
 		}
 		break;
-	case 3:
+	case 3: //Gul
 		{
 			SetDCBrushColor(hdc, RGB(0,0,0));
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);

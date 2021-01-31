@@ -13,4 +13,7 @@ public:
 	void draw(HDC hdc) const;
 	void set_x_pos();
 	void set_y_pos();
+	int get_x_pos() const;
+	int get_y_pos() const;
+	
 };

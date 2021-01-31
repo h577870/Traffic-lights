@@ -3,39 +3,42 @@
 
 #include "framework.h"
 #include "Oblig1.h"
-
 #include <list>
-
-
 #include "car.h"
 #include "traffic_light.h"
 
 constexpr auto MAX_LOADSTRING = 100;
+double pw;
+double pn;
+bool settings = false;
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
-traffic_light* traffic_left = new traffic_light(0, 150, 250);
-traffic_light* traffic_top = new traffic_light(2, 150, 650);
+traffic_light* traffic_top = new traffic_light(0, 150, 250);
+traffic_light* traffic_left = new traffic_light(2, 150, 650);
 
 //List of cars from left
-std::list<car> carsLeft = {
-	car(-10, 400)
-};
+std::list<car> cars_left = {};
 
 //List of cars from top
-std::list<car> carsTop = {
-	car(350, -10)
-};
+std::list<car> cars_top = {};
 
+
+bool create_car(const double p)
+{
+	return rand()/(RAND_MAX+1.0) < p / 100;
+}
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK	Error(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK	Settings(HWND, UINT, WPARAM, LPARAM);
 
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -46,7 +49,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: Place code here.
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -124,35 +126,36 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-
-	case WM_CREATE:
-		break;
-
 	case WM_LBUTTONDOWN:
 		{
-			SetTimer(hWnd, 2, 500, nullptr);
+			if (!settings)
+			{
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Settings);
+			}
+			else
+			{
+				SetTimer(hWnd, 2, 500, nullptr);
+			}
 		}
-
+		break;
 	case WM_RBUTTONDOWN:
 		{
-			SetTimer(hWnd, 3, 500, nullptr);
+			if (!settings)
+			{
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, Settings);	
+			}
+			else
+			{
+				SetTimer(hWnd, 3, 500, nullptr);
+			}
 		}
-    
+		break;
 	case WM_TIMER:
+
 		switch (wParam)
 		{
 		case 1: //traffic lights
@@ -164,35 +167,70 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 2: //cars from left
 			{
-				for (auto &car : carsLeft)
+				if (!cars_left.empty())
 				{
-					car.set_x_pos();
-				}
+					for (auto &car : cars_left)
+					{
+						if (!(traffic_left->get_state() != 2 && car.get_x_pos() >= 280 && car.get_x_pos() <= 300))
+						{
+							car.set_x_pos();
+						}
+						else break;
+					}
 				InvalidateRect(hWnd, nullptr, TRUE);
+				}
+				if (create_car(pw))
+				{
+					if (!cars_left.empty())
+					{
+						const car ex = cars_left.back();
+						if (ex.get_x_pos() != -10)
+						{
+							cars_left.emplace_back(-10, 400);
+						}
+					}
+					else cars_left.emplace_back(-10, 400);
+				}
 			}
 			break;
 		case 3: //cars from top
 			{
-				for (auto &car : carsTop)
+				if (!cars_top.empty())
 				{
-					car.set_y_pos();
+					for (auto &car : cars_top)
+					{
+						if (!(traffic_top->get_state() != 2 && car.get_y_pos() <= 300 && car.get_y_pos() >= 280))
+						{
+							car.set_y_pos();
+						}
+						else break;
+					}
+					InvalidateRect(hWnd, nullptr, TRUE);
 				}
-				InvalidateRect(hWnd, nullptr, TRUE);
+				if (create_car(pn))
+				{
+					if (!cars_top.empty())
+					{
+						const car ex = cars_top.back();
+						if (ex.get_y_pos() != -10)
+						{
+							cars_top.emplace_back(350, -10);
+						}
+					}
+					else cars_top.emplace_back(350, -10);
+				}
 			}
 			break;
 		default:
 			break;
 		}
-    	
+    	break;
     case WM_COMMAND:
         {
 	        const int wmId = LOWORD(wParam);
             // Parse the menu selections:
             switch (wmId)
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -226,11 +264,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             traffic_left->draw(hdc);
     		traffic_top->draw(hdc);
     		
-    		for (auto const &car : carsLeft)
+    		for (auto const &car : cars_left)
     		{
     			car.draw(hdc);
     		}
-    		for (auto const &car : carsTop)
+    		for (auto const &car : cars_top)
     		{
     			car.draw(hdc);
     		}
@@ -238,8 +276,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY:
-		carsLeft.clear();
-    	carsTop.clear();
+		cars_left.clear();
+    	cars_top.clear();
 		delete traffic_left;
     	delete traffic_top;
     	KillTimer(hWnd, 1);
@@ -254,23 +292,61 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK Settings(HWND hDialog, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return static_cast<INT_PTR>(TRUE);
+	
+	UNREFERENCED_PARAMETER(lparam);
+	switch (msg)
+	{
+	case WM_INITDIALOG:
+		return static_cast<INT_PTR>(TRUE);
 
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
+	case WM_COMMAND:
+		if (LOWORD(wparam) == IDOK)
+		{
+			const double ipw = GetDlgItemInt(hDialog, IDC_EDIT1, nullptr, TRUE);
+			const double ipn = GetDlgItemInt(hDialog, IDC_EDIT2, nullptr, TRUE);
+			if (ipw + ipn > 100) //Sjekk om parametrene overskrider 100.
+			{
+				DialogBox(hInst, MAKEINTRESOURCE(IDD_ERRORBOX), hDialog, Error);
+			}
+			else
+			{
+				pw = ipw;
+				pn = ipn;
+				settings = true;
+				EndDialog(hDialog, LOWORD(wparam));
+				return static_cast<INT_PTR>(TRUE);
+			}
+		}
+		if (LOWORD(wparam) == IDCANCEL)
+		{
+			EndDialog(hDialog, LOWORD(wparam));
+			return static_cast<INT_PTR>(TRUE);
+		}
+		break;
+	default: ;
+	}
+	return 0;
+}
+
+INT_PTR CALLBACK Error(HWND hError, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	UNREFERENCED_PARAMETER(lparam);
+	switch (msg)
+	{
+	case WM_INITDIALOG:
+		return static_cast<INT_PTR>(TRUE);
+
+	case WM_COMMAND:
+		if (LOWORD(wparam) == IDOK)
+		{
+			EndDialog(hError, LOWORD(wparam));
             return static_cast<INT_PTR>(TRUE);
-        }
-        break;
-    default: ;
-    }
-    return static_cast<INT_PTR>(FALSE);
+		}
+		break;
+	default:
+		break;
+	}
+	return static_cast<INT_PTR>(FALSE);
 }

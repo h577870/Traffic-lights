@@ -1,4 +1,5 @@
 ﻿#include "car.h"
+
 #include "framework.h"
 
 void car::draw(HDC hdc) const
@@ -18,3 +19,18 @@ void car::set_y_pos()
 {
 	this->ypos_ = ypos_ + 20;
 }
+
+int car::get_x_pos() const
+{
+	return this->xpos_;
+}
+
+int car::get_y_pos() const
+{
+	return this->ypos_;
+}
+
+
+
+
+
