@@ -8,8 +8,8 @@
 #include "traffic_light.h"
 
 constexpr auto MAX_LOADSTRING = 100;
-double pw;
-double pn;
+double pw = 0.0;
+double pn = 0.0;
 bool settings = false;
 
 // Global Variables:
@@ -121,7 +121,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-	SetTimer(hWnd, 1, 5000, nullptr); //traffic lights
+	SetTimer(hWnd, 1, 2500, nullptr); //traffic lights
 
    return TRUE;
 }
@@ -138,7 +138,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				SetTimer(hWnd, 2, 500, nullptr);
+				SetTimer(hWnd, 2, 250, nullptr);
 			}
 		}
 		break;
@@ -150,7 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else
 			{
-				SetTimer(hWnd, 3, 500, nullptr);
+				SetTimer(hWnd, 3, 250, nullptr);
 			}
 		}
 		break;
@@ -244,6 +244,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC__* hdc = BeginPaint(hWnd, &ps);
 
+    		wchar_t buf_left[100];
+    		wchar_t buf_top[100];
+
             void* stockbrush = GetStockObject(DC_BRUSH);
     		SelectObject(hdc, stockbrush);
     		
@@ -254,6 +257,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     		SetDCBrushColor(hdc, RGB(255,255,255));
 			Rectangle(hdc, 300, 300, 450, 295);
     		Rectangle(hdc, 295, 450, 301,300);
+
+            const int leftlen = swprintf_s(buf_left, 100, L"Sannsynlighet for biler fra venstre: %d", static_cast<int>(pw));
+            const int toplen = swprintf_s(buf_top, 100, L"Sannsynlighet for biler fra topp: %d", static_cast<int>(pn));
+    		TextOut(hdc, 1000, 200, buf_left, leftlen);
+    		TextOut(hdc, 1000, 220, buf_top, toplen);
+    		
 
     		/*
 				Choose auto x when you want to work with copies.
@@ -275,6 +284,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+
+	case WM_KEYDOWN:
+		switch (wParam)
+    	{
+		case VK_LEFT:
+			{
+				if (pw == 0.0) break;
+				pw -= 10;
+				break;
+			}
+
+        case VK_RIGHT:
+			{
+				if (pw == 100.0) break;
+				pw += 10;
+				break;
+			}
+
+		case VK_DOWN: 
+			{
+				if (pn == 0.0) break;
+				pn -= 10;
+				break;
+			}
+
+		case VK_UP: 
+			{
+				if (pn == 100.0) break;
+				pn += 10;
+				break;
+			}
+			
+		default: ;
+        }
+    	InvalidateRect(hWnd, nullptr, TRUE);
+		break;
+    
     case WM_DESTROY:
 		cars_left.clear();
     	cars_top.clear();
