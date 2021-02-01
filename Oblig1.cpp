@@ -121,7 +121,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-	SetTimer(hWnd, 1, 2500, nullptr); //traffic lights
+	SetTimer(hWnd, 1, 4000, nullptr); //traffic lights
 
    return TRUE;
 }
@@ -162,6 +162,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			{
 				traffic_left->set_state();
 				traffic_top->set_state();
+				if (traffic_left->get_state() == 1 || traffic_left->get_state() == 3 || traffic_top->get_state() == 1 || traffic_top->get_state() == 3)
+				{
+					SetTimer(hWnd, 1, 1250, nullptr);
+				}
+				else SetTimer(hWnd, 1, 4000, nullptr);
 				InvalidateRect(hWnd, nullptr, FALSE);
 			}
 			break;
