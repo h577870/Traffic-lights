@@ -2,11 +2,14 @@
 
 #include "framework.h"
 
+car::car()
+= default;
+
 void car::draw(HDC hdc) const
 {
 	const HGDIOBJ stockbrush = GetStockObject(DC_BRUSH);
 	SelectObject(hdc, stockbrush);
-	SetDCBrushColor(hdc, RGB(0,0,0));
+	SetDCBrushColor(hdc, RGB(this->r_,this->g_,this->b_));
 	Rectangle(hdc, xpos_, ypos_, xpos_ - 10, ypos_ - 10);	
 }
 
@@ -28,6 +31,11 @@ int car::get_x_pos() const
 int car::get_y_pos() const
 {
 	return this->ypos_;
+}
+
+int car::rand_colour()
+{
+	return rand() % 256;
 }
 
 

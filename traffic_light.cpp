@@ -25,7 +25,7 @@ void traffic_light::draw(HDC hdc) const
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);
 		    SetDCBrushColor(hdc, RGB(255,0,0));
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 105, xpos_ - 45, ypos_ - 145);
-		    SetDCBrushColor(hdc, RGB(255,255,255));
+		    SetDCBrushColor(hdc, RGB(133,133,133));
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 55, xpos_ - 45, ypos_ - 95);
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 5, xpos_ - 45, ypos_ - 45);
 		}
@@ -38,7 +38,7 @@ void traffic_light::draw(HDC hdc) const
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 105, xpos_ - 45, ypos_ - 145);
 		    SetDCBrushColor(hdc, RGB(255,255,0));
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 55, xpos_ - 45, ypos_ - 95);
-			SetDCBrushColor(hdc, RGB(255,255,255));
+			SetDCBrushColor(hdc, RGB(133,133,133));
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 5, xpos_ - 45, ypos_ - 45);
 		}
 		break;
@@ -46,7 +46,7 @@ void traffic_light::draw(HDC hdc) const
 		{
 			SetDCBrushColor(hdc, RGB(0,0,0));
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);
-			SetDCBrushColor(hdc, RGB(255,255,255));
+			SetDCBrushColor(hdc, RGB(133,133,133));
 			Ellipse(hdc, xpos_ - 5, ypos_ - 105, xpos_ - 45, ypos_ - 145);
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 55, xpos_ - 45, ypos_ - 95);
 			SetDCBrushColor(hdc, RGB(0,255,0));
@@ -57,11 +57,11 @@ void traffic_light::draw(HDC hdc) const
 		{
 			SetDCBrushColor(hdc, RGB(0,0,0));
 			Rectangle(hdc, xpos_,ypos_,xpos_ - 50,ypos_ - 150);
-			SetDCBrushColor(hdc, RGB(255,255,255));
+			SetDCBrushColor(hdc, RGB(133,133,133));
 			Ellipse(hdc, xpos_ - 5, ypos_ - 105, xpos_ - 45, ypos_ - 145);
 			SetDCBrushColor(hdc, RGB(255,255,0));
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 55, xpos_ - 45, ypos_ - 95);
-			SetDCBrushColor(hdc, RGB(255,255,255));
+			SetDCBrushColor(hdc, RGB(133,133,133));
 		    Ellipse(hdc, xpos_ - 5, ypos_ - 5, xpos_ - 45, ypos_ - 45);
 		}
 		break;

@@ -167,15 +167,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 2: //cars from left
 			{
+				car ref;
 				if (!cars_left.empty())
 				{
 					for (auto &car : cars_left)
 					{
 						if (!(traffic_left->get_state() != 2 && car.get_x_pos() >= 280 && car.get_x_pos() <= 300))
 						{
-							car.set_x_pos();
+							if ((car.get_x_pos() + 20) != ref.get_x_pos())
+							{
+								car.set_x_pos();
+							}
+							ref = car;
 						}
-						else break;
+						else ref = car;
 					}
 				InvalidateRect(hWnd, nullptr, TRUE);
 				}
@@ -195,15 +200,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		case 3: //cars from top
 			{
+				car ref;
 				if (!cars_top.empty())
 				{
 					for (auto &car : cars_top)
 					{
 						if (!(traffic_top->get_state() != 2 && car.get_y_pos() <= 300 && car.get_y_pos() >= 280))
 						{
-							car.set_y_pos();
+							if ((car.get_y_pos() + 20) != ref.get_y_pos())
+							{
+								car.set_y_pos();
+							}
+							ref = car;
 						}
-						else break;
+						else ref = car;
 					}
 					InvalidateRect(hWnd, nullptr, TRUE);
 				}
